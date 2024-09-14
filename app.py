@@ -19,7 +19,7 @@ CORS(app)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
-llm = ChatOpenAI(model_name="gpt-4", temperature=0.7, openai_api_key=OPENAI_API_KEY)
+llm = ChatOpenAI(model_name="gpt-4o", temperature=0.7, openai_api_key=OPENAI_API_KEY)
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 vector_store = None
 
