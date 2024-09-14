@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = Flask(_name_)
+app = Flask(__name__)
 CORS(app)
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -77,5 +77,5 @@ def chat():
     response = chain({"question": user_question})
     return jsonify({"reply": response["answer"]})
 
-if _name_ == '_main_':
+if __name__ == '__main__':
     app.run(debug=True)
