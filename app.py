@@ -50,7 +50,9 @@ def process_transcription():
     
     transcription_text = process_jsonl(url)
     update_vector_store(transcription_text)
-    return jsonify({"message": "Transcription processed successfully"}), 200
+    return jsonify({"message": "Transcription processed successfully",
+                    "transcription_text":transcription_text
+                   }), 200
 
 @app.route('/chat', methods=['POST'])
 def chat():
