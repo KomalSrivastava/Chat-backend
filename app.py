@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(_name_)
 CORS(app)
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -51,16 +51,23 @@ def process_transcription():
     transcription_text = process_jsonl(url)
     update_vector_store(transcription_text)
     return jsonify({"message": "Transcription processed successfully",
-                    "transcription_text":transcription_text
-                   }), 200
+                    "transcription_text": transcription_text}), 200
 
 @app.route('/chat', methods=['POST'])
 def chat():
     global vector_store
     user_question = request.json.get('question', '')
+    transcription_text = request.json.get('transcription', '')
+
+    if not user_question:
+        return jsonify({"error": "No question provided"}), 400
 
     if vector_store is None:
-        return jsonify({"reply": "No transcription data available. Please process a transcription first."}), 400
+        return jsonify({"error": "No transcription data available. Please process a transcription first."}), 400
+
+    # Update vector store with the provided transcription text
+    if transcription_text:
+        update_vector_store(transcription_text)
 
     chain = ConversationalRetrievalChain.from_llm(
         llm=llm,
@@ -70,5 +77,5 @@ def chat():
     response = chain({"question": user_question})
     return jsonify({"reply": response["answer"]})
 
-if __name__ == '__main__':
+if _name_ == '_main_':
     app.run(debug=True)
