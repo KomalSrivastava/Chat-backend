@@ -12,12 +12,11 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-
+    
 app = Flask(__name__)
 CORS(app)
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
 embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
 llm = ChatOpenAI(model_name="gpt-4o", temperature=0.7, openai_api_key=OPENAI_API_KEY)
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
@@ -57,17 +56,9 @@ def process_transcription():
 def chat():
     global vector_store
     user_question = request.json.get('question', '')
-    transcription_text = request.json.get('transcription', '')
-
-    if not user_question:
-        return jsonify({"error": "No question provided"}), 400
 
     if vector_store is None:
-        return jsonify({"error": "No transcription data available. Please process a transcription first."}), 400
-
-    # Update vector store with the provided transcription text
-    if transcription_text:
-        update_vector_store(transcription_text)
+        return jsonify({"reply": "No transcription data available. Please process a transcription first."}), 400
 
     chain = ConversationalRetrievalChain.from_llm(
         llm=llm,
